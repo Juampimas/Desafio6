@@ -11,7 +11,7 @@ const render=(data)=>{
     }).join(" ")
     document.getElementById("messages").innerHTML=html;
     const ps = data.products.map((p)=>{
-        return(`<tr>
+        return`<tr>
             <th>${p.title}</th>
             <td>${p.price}</td>
             <td>
@@ -19,9 +19,9 @@ const render=(data)=>{
                 <img class="w-50" src=${p.thumbnail} alt='Product image' />
               </div>
             </td>
-          </tr>`)
+          </tr>`;
     }).join(" ")
-    document.getElementById("tbdy").innerHTML=ps
+    document.getElementById("tbdy").innerHTML=ps;
 }
 const addMessage=(e)=>{
     let fecha = new Date().toLocaleDateString()+ ' ' +new Date().toTimeString()
