@@ -1,4 +1,4 @@
-class Contenedor {
+export default class Contenedor {
     constructor(config) {
       this.knex = require("knex")(config);
       this.crearTabla();
@@ -28,4 +28,4 @@ class Contenedor {
     }
   }
   
-  module.exports = Contenedor;
+ 
