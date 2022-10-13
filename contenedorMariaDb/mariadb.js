@@ -1,6 +1,6 @@
-const Contenedor = require("./Contenedor.js");
-const options = require("./options/mariadb.js");
+import Contenedor from "./Contenedor.js";
+import {options} from "./options/mariadb.js";
 
 const mariadb = new Contenedor(options);
 
-module.exports = { mariadb };
+export default mariadb

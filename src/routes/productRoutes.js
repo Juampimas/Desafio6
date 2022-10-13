@@ -1,7 +1,8 @@
-const { Router } = require("express");
-const router = Router();
+import Router from "express";
+export const router = Router();
+import {products} from "../contenedor.js";
 
-const products = require('../contenedor')
+
 
 router.get('/', (req, res) => {
   res.render('agregarProducto.handlebars',{ products: products.getAll() });
@@ -16,5 +17,5 @@ router.post('/productos', (req, res) => {
   res.redirect('/productos');
 });
 
-module.exports = router;
+
 

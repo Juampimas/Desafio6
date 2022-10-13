@@ -1,13 +1,16 @@
-const app = require("./app.js");
-const PORT = process.env.PORT || 3001;
-const { Server: HttpServer } = require("http");
-const { Server: IOServer } = require("socket.io");
-const httpServer = new HttpServer(app);
-const io = new IOServer(httpServer);
-const { mariadb } = require("./contenedorMariaDb/mariadb");
-const { sqlite3 } = require("./contenedorSqlite3/Sqlite3");
+import { app } from './app.js';
+import { Server } from "http"
+import { Socket } from "socket.io";
+import {schema, normalize} from "normalizr";
 
-const server = httpServer.listen(PORT, () => {
+// import { mariadb } from "./contenedorMariaDb/mariadb.js";
+import { sqlite3 } from "./contenedorSqlite3/Sqlite3.js";
+
+const PORT = process.env.PORT || 3001;
+const httpServer = new Server(app);
+const io = new Socket(httpServer);
+
+const server = Server.listen(PORT, () => {
   console.log(`Servidor http escuchando en el puerto ${server.address().port}`);
 });
 
@@ -18,7 +21,7 @@ server.on("error", (err) => {
 });
 
 io.on("connection", async (socket) => {
-  const products = await mariadb.getAll();
+  const products = await sqlite3.getAll();
   const messages = await sqlite3.getAll();
 
   socket.emit("messages", { messages, products });
@@ -27,17 +30,36 @@ io.on("connection", async (socket) => {
     await sqlite3.save(data);
     let todo = {
       messages: await sqlite3.getAll(),
-      products: await mariadb.getAll(),
+      products: await sqlite3.getAll(),
     };
     io.sockets.emit("messages", todo);
   });
 
   socket.on("new-product", async (data) => {
-    await mariadb.save(data);
+    await sqlite3.save(data);
     let todo = {
       messages: await sqlite3.getAll(),
-      products: await mariadb.getAll(),
+      products: await sqlite3.getAll(),
     };
     io.sockets.emit("messages", todo);
   });
 });
+
+// io.on("connection", async (socket) => { 
+
+//   socket.emit("productos", await sqlite3.getAll()); 
+//   socket.emit("chat", normalize(await sqlite3.getAll(), [messageSchema]))
+
+
+//   socket.on("nuevoProducto", async (data) => { 
+//     await sqlite3.save(data)
+//      io.sockets.emit('productos', await sqlite3.getAll())
+
+//   })
+
+//   socket.on("nuevoMensaje", async (data) => { 
+//    await sqlite3.save(data)
+//      io.sockets.emit('chat', normalize(await sqlite3.getAll(), [messageSchema]))
+//   });
+
+// })
